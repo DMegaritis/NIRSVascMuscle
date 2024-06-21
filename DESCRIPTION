@@ -6,7 +6,7 @@ Authors@R:
            comment = c(ORCID = "0000-0001-6786-4346"))
 Description: This package provides tools for analyzing Near-Infrared Spectroscopy (NIRS) data 
     in the context of muscle physiology research. It includes functions for data cleaning, event 
-    slicing, aggregation, heterogeneity, on-off transient analysis across multiple channels.
+    slicing, aggregation, heterogeneity, and on-off transient analysis across multiple channels.
 License: Apache License 2.0
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
