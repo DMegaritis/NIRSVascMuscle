@@ -1,25 +1,3 @@
-# NIRSVascMuscle
-
-## Installation
-
-To install the NIRSVascMuscle package from GitHub, you can use the following code:
-
-```r
-if (!requireNamespace("devtools", quietly = TRUE)) {
-  install.packages("devtools")
-}
-
-library(devtools)
-
-devtools::install_github("DMegaritis/NIRSVascMuscle")
-library(NIRSVascMuscle)
-
-cat("NIRSVascMuscle package loaded successfully.\n")
-```
-
-## Running the Functions
-
-```r
 # Loading the package
 library(NIRSVascMuscle)
 
@@ -48,4 +26,3 @@ cv_vars <- c("TOI_1", "TOI_2", "TOI_3", "TOI_4")
 ID <- "ID"
 time_point <- "Comment"
 hetero <- heterogeneity(aggregated, vars, cv_vars, ID, time_point)
-```
