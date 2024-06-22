@@ -15,3 +15,6 @@ Imports:
     dplyr,
     tidyr,
     zoo
+Inst/extdata:
+    001-001_NIRS.csv
+    002-002_NIRS.csv
