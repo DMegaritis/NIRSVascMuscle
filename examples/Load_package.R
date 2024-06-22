@@ -1,10 +1,5 @@
-# NIRSVascMuscle
+# Example on how to load the NIRSVascMuscle package from GitHub
 
-## Installation
-
-To install the NIRSVascMuscle package from GitHub, you can use the following code:
-
-```r
 if (!requireNamespace("devtools", quietly = TRUE)) {
   install.packages("devtools")
 }
