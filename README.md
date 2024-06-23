@@ -6,7 +6,7 @@ NIRSVascMuscle is an R package designed for analyzing Near-Infrared Spectroscopy
 
 This is a package to perform analyses on Near-Infrared Spectroscopy (NIRS) data. The heterogeneity analyses are based on the paper:
 
-Vogiatzis, I., Habazettl, H., Louvaris, Z., Andrianopoulos, V., Wagner, H., Zakynthinos, S., & Wagner, P. D. (2015). A method for assessing heterogeneity of blood flow and metabolism in exercising normal human muscle by near-infrared spectroscopy. Journal of applied physiology (Bethesda, Md. : 1985), 118(6), 783-793. https://doi.org/10.1152/japplphysiol.00458.2014
+- Vogiatzis, I., Habazettl, H., Louvaris, Z., Andrianopoulos, V., Wagner, H., Zakynthinos, S., & Wagner, P. D. (2015). A method for assessing heterogeneity of blood flow and metabolism in exercising normal human muscle by near-infrared spectroscopy. Journal of applied physiology (Bethesda, Md. : 1985), 118(6), 783-793. https://doi.org/10.1152/japplphysiol.00458.2014
 
 Additionally, the kinetics analyses implemented equations from the following original papers:
 
