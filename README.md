@@ -1,6 +1,6 @@
 # NIRSVascMuscle
 
-NIRSVascMuscle is an R package designed for analyzing Near-Infrared Spectroscopy (NIRS) data in muscle physiology research. This package provides tools for data cleaning, event slicing, aggregation, heterogeneity, and on-off transient analysis across multiple channels.
+NIRSVascMuscle is an R package designed for analyzing Near-Infrared Spectroscopy (NIRS) data in muscle physiology research. This package provides tools for data smoothing, cleaning, event slicing, aggregation, heterogeneity, and on-off transient analysis across multiple channels.
 
 ## General Description
 
