@@ -14,7 +14,9 @@ RoxygenNote: 7.2.3
 Imports:
     dplyr,
     tidyr,
-    zoo
+    zoo,
+    signal
+	
 Inst/extdata:
     001-001_NIRS.csv
     002-002_NIRS.csv

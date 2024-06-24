@@ -36,6 +36,7 @@ cat("NIRSVascMuscle package loaded successfully.\n")
 
 ```r
 # Loading the package
+# Loading the package
 library(NIRSVascMuscle)
 
 # Testing functions using the dummy data of NIRSVascMuscle:
@@ -45,7 +46,12 @@ winsize <- 20
 vars <- c("TOI_1", "TOI_2")
 cleaned_files <- clean(path, winsize, vars)
 
-# Test function sliceslice
+# Test function: filter_sg
+path <- system.file("extdata", package = "NIRSVascMuscle")
+vars <- c("TOI_1", "TOI_2")
+filtering <- filter_sg(path, vars)
+
+# Test function: slice
 files <- cleaned_files
 period_col <- "Comment"
 events <- list("EVNT1 ", "EVNT2 ")
