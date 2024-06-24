@@ -12,7 +12,6 @@ Imports:
     tidyr,
     zoo,
     signal
-
 Inst/extdata:
     001-001_NIRS.csv
     002-002_NIRS.csv

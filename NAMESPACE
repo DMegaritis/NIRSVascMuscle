@@ -2,8 +2,10 @@
 
 export(aggregate_NIRS)
 export(clean)
+export(filter_sg)
 export(heterogeneity)
 export(slice)
 import(dplyr)
+import(signal)
 import(tidyr)
 import(zoo)
