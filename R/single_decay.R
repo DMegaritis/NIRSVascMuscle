@@ -10,9 +10,9 @@
 #' @param event_column The column name (as a string) in the data frames that contains the event markers.
 #' @param start_event The value in the event column that marks the start of the event.
 #' @param transient_phase An optional parameter to specify the transient phase (default is NULL).
-#' @param eyeball_data A string ("yes" or "no") indicating whether to manually calculate initial decay parameters.
+#' @param eyeball_data A string ("yes" or "no") indicating whether to calculate initial decay parameters using simple maths. If "no" the user has to specify the initial decay parameters
 #' @param plot_fitted A string ("yes" or "no") indicating whether to plot the fitted model.
-#' @param decay_start The starting point (numeric) for the decay fitting.
+#' @param decay_start The starting point (numeric) for the decay fitting. This should be specified in second.
 #' @param y_Bas_user The user-defined baseline value (numeric) for the y variable.
 #' @param A_p_user The user-defined amplitude value (numeric) for the decay model.
 #' @param T_Dp_user The user-defined time delay value (numeric) for the decay model.
