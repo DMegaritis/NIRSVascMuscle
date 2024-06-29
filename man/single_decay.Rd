@@ -9,6 +9,7 @@ single_decay(
   vars,
   event_column,
   start_event,
+  time_column,
   transient_phase = NULL,
   eyeball_data = "yes",
   plot_fitted,
@@ -27,6 +28,8 @@ single_decay(
 \item{event_column}{The column name (as a string) in the data frames that contains the event markers.}
 
 \item{start_event}{The value in the event column that marks the start of the event.}
+
+\item{time_column}{The column name indicating the time in the users dataset}
 
 \item{transient_phase}{An optional parameter to specify the transient phase (default is NULL).}
 
@@ -50,8 +53,8 @@ A data frame containing the fitted parameters for each variable in the input dat
 \description{
 This function processes data frames or CSV files to fit a single exponential decay model to specified variables.
 It allows for manual or automatic calculation of decay parameters and provides options to visualize the fitted model.
-Before calling this function, your data have to be smoothed, the function "filter_smooth" is suggested rather than th function "clean"
-since no missing values are allowed
+Before calling this function, your data have to be smoothed, the function "filter_smooth" is suggested rather than the function "clean"
+since no missing values are allowed.
 }
 \examples{
 # Example usage with a list of data frames:
