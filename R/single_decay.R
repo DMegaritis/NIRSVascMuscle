@@ -126,7 +126,7 @@ single_decay <- function(path_or_list, vars, event_column, start_event, transien
           data$index <- c(seq(-start + 1, -1), seq(0, nrow(data) - start))
           data <- data[start:nrow(data), ]
 
-          # Reseting elpsec (time) to start from 0
+          # Resetting elpsec (time) to start from 0
           first_instance <- data[["elpsec"]][1]
           data[["elpsec"]] <- data[["elpsec"]] - first_instance
 
