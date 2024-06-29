@@ -28,7 +28,7 @@ filtered_data <- filter_smooth(path, vars)
 # Example usage with list of data frames:
 data_list <- list(data1, data2, data3)
 vars <- c("var1", "var2")
-filtered_data <- filter_smooth(data_list, vars)
+filtered_smoothed <- filter_smooth(data_list, vars)
 }
 \references{
 Savitzky A, Golay MJE (1964). "Smoothing and Differentiation of Data by Simplified Least Squares Procedures."

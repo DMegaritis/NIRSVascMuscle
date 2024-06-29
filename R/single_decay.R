@@ -2,13 +2,13 @@
 #'
 #' This function processes data frames or CSV files to fit a single exponential decay model to specified variables.
 #' It allows for manual or automatic calculation of decay parameters and provides options to visualize the fitted model.
-#' Before calling this function, your data have to be smoothed, the function "filter_smooth" is suggested rather than th function "clean"
-#' since no missing values are allowed
-#'
+#' Before calling this function, your data have to be smoothed, the function "filter_smooth" is suggested rather than the function "clean"
+#' since no missing values are allowed.
 #' @param path_or_list A list of data frames or a directory path containing CSV files to be processed.
 #' @param vars A vector of a single column name in the data frames to which the decay model should be applied.
 #' @param event_column The column name (as a string) in the data frames that contains the event markers.
 #' @param start_event The value in the event column that marks the start of the event.
+#' @param time_column The column name indicating the time in the users dataset
 #' @param transient_phase An optional parameter to specify the transient phase (default is NULL).
 #' @param eyeball_data A string ("yes" or "no") indicating whether to calculate initial decay parameters using simple maths. If "no" the user has to specify the initial decay parameters
 #' @param plot_fitted A string ("yes" or "no") indicating whether to plot the fitted model.
@@ -42,13 +42,13 @@
 #' @import minpack.lm
 #' @export
 
-single_decay <- function(path_or_list, vars, event_column, start_event, transient_phase=NULL, eyeball_data="yes", plot_fitted, decay_start, y_Bas_user, A_p_user, T_Dp_user, tau_p_user) {
+single_decay <- function(path_or_list, vars, event_column, start_event, time_column, transient_phase=NULL, eyeball_data="yes", plot_fitted, decay_start, y_Bas_user, A_p_user, T_Dp_user, tau_p_user) {
 
   eyeball_data <- match.arg(eyeball_data, choices = c("yes", "no"))
   plot_fitted <- match.arg(plot_fitted, choices = c("yes", "no"))
 
   # Specifying function to be called below in different iterations of the if statement
-  process_data <- function(data, vars, event_column, start_event, transient_phase=NULL, eyeball_data="yes", plot_fitted, decay_start, y_Bas_user, A_p_user, T_Dp_user, tau_p_user) {
+  process_data <- function(data, vars, event_column, start_event, time_column, transient_phase=NULL, eyeball_data="yes", plot_fitted, decay_start, y_Bas_user, A_p_user, T_Dp_user, tau_p_user) {
     tryCatch({
       kinetics <- data.frame(
         variable = character(0),
@@ -239,9 +239,11 @@ single_decay <- function(path_or_list, vars, event_column, start_event, transien
   if (is.list(path_or_list)) {
     # Process each data frame in the list
     for (i in seq_along(path_or_list)) {
+      #renaming time_column to elpsec
+      names(path_or_list[[i]])[names(path_or_list[[i]]) == time_column] <- "elpsec"
       # If loading from a list created in the previous steps, the ID is included as a column in each data frame from the list
       ID <- path_or_list[[1]]$ID[1]
-      results[[i]] <- process_data(path_or_list[[i]], vars, event_column, start_event, transient_phase=NULL, eyeball_data, plot_fitted, decay_start, y_Bas_user, A_p_user, T_Dp_user, tau_p_user)
+      results[[i]] <- process_data(path_or_list[[i]], vars, event_column, start_event, time_column, transient_phase=NULL, eyeball_data, plot_fitted, decay_start, y_Bas_user, A_p_user, T_Dp_user, tau_p_user)
 
     }
   } else if (is.character(path_or_list) && dir.exists(path_or_list)) {
@@ -253,7 +255,10 @@ single_decay <- function(path_or_list, vars, event_column, start_event, transien
       name <- basename(file)
       ID <- substr(name, 1, 7)
       data <- read.csv(file)
-      results[[file]] <- process_data(data, vars, event_column, start_event, transient_phase=NULL, eyeball_data, plot_fitted, decay_start, y_Bas_user, A_p_user, T_Dp_user, tau_p_user)
+      #renaming time_column to elpsec
+      names(data)[names(data) == time_column] <- "elpsec"
+
+      results[[file]] <- process_data(data, vars, event_column, start_event, time_column, transient_phase=NULL, eyeball_data, plot_fitted, decay_start, y_Bas_user, A_p_user, T_Dp_user, tau_p_user)
     }
   } else {
     stop("path_or_list must be either a list of data frames or a valid directory path containing CSV files.")
