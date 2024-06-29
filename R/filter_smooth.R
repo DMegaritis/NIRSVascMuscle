@@ -16,7 +16,7 @@
 #' # Example usage with list of data frames:
 #' data_list <- list(data1, data2, data3)
 #' vars <- c("var1", "var2")
-#' filtered_data <- filter_smooth(data_list, vars)
+#' filtered_smoothed <- filter_smooth(data_list, vars)
 #' @import signal
 #' @import dplyr
 #' @import zoo
