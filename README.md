@@ -46,10 +46,10 @@ winsize <- 20
 vars <- c("TOI_1", "TOI_2")
 cleaned_files <- clean(path, winsize, vars)
 
-# Test function: filter_sg
+# Test function: filter_smooth
 path <- system.file("extdata", package = "NIRSVascMuscle")
 vars <- c("TOI_1", "TOI_2")
-filtering <- filter_sg(path, vars)
+filtering <- filter_smooth(path, vars)
 
 # Test function: slice
 files <- cleaned_files

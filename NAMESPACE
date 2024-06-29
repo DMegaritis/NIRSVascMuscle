@@ -2,7 +2,7 @@
 
 export(aggregate_NIRS)
 export(clean)
-export(filter_sg)
+export(filter_smooth)
 export(heterogeneity)
 export(slice)
 import(dplyr)

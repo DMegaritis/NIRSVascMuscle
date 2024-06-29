@@ -8,11 +8,11 @@ winsize <- 20
 vars <- c("TOI_1", "TOI_2")
 cleaned_files <- clean(path, winsize, vars)
 
-# Test function: filter_sg
+# Test function: filter_smooth
 # this function works with both paths and lists (error if there are missing data)
 path <- system.file("extdata", package = "NIRSVascMuscle")
 vars <- c("TOI_1", "TOI_2")
-filtering <- filter_sg(path, vars)
+filtering <- filter_smooth(path, vars)
 
 # Test function sliceslice
 files <- cleaned_files
