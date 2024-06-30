@@ -25,6 +25,7 @@
 #' vars <- "TOI_1"
 #' event_column <- "Comment"
 #' start_event <- "EVNT13 "
+#' time_column <- "elpsec"
 #' transient_phase <- "on"
 #' eyeball_data <- "yes"
 #' plot_fitted <- "no"
@@ -34,7 +35,7 @@
 #' T_Dp_user <- 9
 #' tau_p_user <- 5
 #'
-#' decay <- single_decay(path_or_list, vars, event_column, start_event, transient_phase, eyeball_data, plot_fitted, decay_start, y_Bas_user, A_p_user, T_Dp_user, tau_p_user)
+#' decay <- single_decay(path_or_list, vars, event_column, start_event, time_column, transient_phase, eyeball_data, plot_fitted, decay_start, y_Bas_user, A_p_user, T_Dp_user, tau_p_user)
 #' @import ggplot2
 #' @import dplyr
 #' @import signal
