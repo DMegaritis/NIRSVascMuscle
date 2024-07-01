@@ -11,7 +11,8 @@
 #' @param sampling_freq The sampling frequency of the NIRS data.
 #' @param data_before Time duration (in seconds) of data to select before each event.
 #' @param data_after Time duration (in seconds) of data to select after each event.
-#' @param transient_phase Character indicating the transient phase: "heterogeneity" or "kinetics". If transient_phase is set to "heterogeneity" the data_after parameter is not used
+#' @param transient_phase Character indicating the transient phase: "heterogeneity" or "kinetics". If transient_phase is set to "heterogeneity" the data_after parameter is not used.
+#' @param time_column The column name that the time is stored.
 #' @return A list of sliced data frames, where each element corresponds to a sliced dataset from each input data frame.
 #' @examples
 #' # Example usage:
@@ -22,13 +23,14 @@
 #' data_before <- 10  # Select 10 seconds of data before each event
 #' data_after <- 60 # Select 60 seconds of data after ach event
 #' transient_phase <- "kinetics"
-#' sliced_data <- slice_event(file_list, period_col, events, sampling_freq, data_before, data_after, transient_phase)
+#' time_column <- "elpsec"
+#' sliced_data <- slice_event(file_list, period_col, events, sampling_freq, data_before, data_after, transient_phase, time_column)
 #' @import zoo
 #' @import dplyr
 #' @import tidyr
 #' @export
 
-slice_event <- function(file_list, period_col, events, sampling_freq, data_before, data_after, transient_phase) {
+slice_event <- function(file_list, period_col, events, sampling_freq, data_before, data_after, transient_phase, time_column) {
   file_list <- file_list
 
   if (!is.list(file_list)) stop("file_list must be a list of data frames.")
@@ -79,8 +81,7 @@ slice_event <- function(file_list, period_col, events, sampling_freq, data_befor
       combined_rows_to_select <- c(rows_to_select_before, rows_to_select_after)
       unique_rows_to_select <- unique(combined_rows_to_select)
       data_slice <- data[unique_rows_to_select, ]
-      data_slice <- data_slice[order(data_slice$elpsec), ]
-
+      data_slice <- data_slice[order(data_slice[[time_column]]), ]
     }
 
     cleaned_sliced_file_list[[i]] <- data_slice

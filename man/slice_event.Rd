@@ -11,7 +11,8 @@ slice_event(
   sampling_freq,
   data_before,
   data_after,
-  transient_phase
+  transient_phase,
+  time_column
 )
 }
 \arguments{
@@ -27,7 +28,9 @@ slice_event(
 
 \item{data_after}{Time duration (in seconds) of data to select after each event.}
 
-\item{transient_phase}{Character indicating the transient phase: "heterogeneity" or "kinetics". If transient_phase is set to "heterogeneity" the data_after parameter is not used}
+\item{transient_phase}{Character indicating the transient phase: "heterogeneity" or "kinetics". If transient_phase is set to "heterogeneity" the data_after parameter is not used.}
+
+\item{time_column}{The column name that the time is stored.}
 }
 \value{
 A list of sliced data frames, where each element corresponds to a sliced dataset from each input data frame.
@@ -46,5 +49,6 @@ sampling_freq <- 100  # Assuming 100 rows per second
 data_before <- 10  # Select 10 seconds of data before each event
 data_after <- 60 # Select 60 seconds of data after ach event
 transient_phase <- "kinetics"
-sliced_data <- slice_event(file_list, period_col, events, sampling_freq, data_before, data_after, transient_phase)
+time_column <- "elpsec"
+sliced_data <- slice_event(file_list, period_col, events, sampling_freq, data_before, data_after, transient_phase, time_column)
 }
