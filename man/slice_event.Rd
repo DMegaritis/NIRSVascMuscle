@@ -9,7 +9,8 @@ slice_event(
   period_col,
   events,
   sampling_freq,
-  data_time,
+  data_before,
+  data_after,
   transient_phase
 )
 }
@@ -22,16 +23,19 @@ slice_event(
 
 \item{sampling_freq}{The sampling frequency of the NIRS data.}
 
-\item{data_time}{Time duration (in seconds) of data to select around each event.}
+\item{data_before}{Time duration (in seconds) of data to select before each event.}
 
-\item{transient_phase}{Character indicating the transient phase: "on" or "off".}
+\item{data_after}{Time duration (in seconds) of data to select after each event.}
+
+\item{transient_phase}{Character indicating the transient phase: "heterogeneity" or "kinetics". If transient_phase is set to "heterogeneity" the data_after parameter is not used}
 }
 \value{
 A list of sliced data frames, where each element corresponds to a sliced dataset from each input data frame.
 }
 \description{
-This function slices each dataset in a list of data frames based on specified events and transient phases.
-It selects rows around the events depending on whether the transient phase is "on" or "off".
+This function slices each dataset in a list of data frames based on specified events.
+Depending on the transient_phase the  data are sliced in a different way. For heterogeneity analyses the last seconds (user defined) before a specific period are sliced.
+For kinetics analyses the data are sliced around the event depending on the user settings.
 }
 \examples{
 # Example usage:
@@ -39,7 +43,8 @@ file_list <- cleaned_files
 period_col <- "timestamp"
 events <- list("event1", "event2")
 sampling_freq <- 100  # Assuming 100 rows per second
-data_time <- 10  # Select 10 seconds of data around each event
-transient_phase <- "off"  # Select data before events
-sliced_data <- slice_event(file_list, period_col, events, sampling_freq, data_time, transient_phase)
+data_before <- 10  # Select 10 seconds of data before each event
+data_after <- 60 # Select 60 seconds of data after ach event
+transient_phase <- "kinetics"
+sliced_data <- slice_event(file_list, period_col, events, sampling_freq, data_before, data_after, transient_phase)
 }
