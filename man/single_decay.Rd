@@ -10,8 +10,8 @@ single_decay(
   event_column,
   start_event,
   time_column,
-  transient_phase = NULL,
-  eyeball_data = "yes",
+  transient_phase,
+  eyeball_data,
   plot_fitted,
   decay_start,
   y_Bas_user,
@@ -31,7 +31,7 @@ single_decay(
 
 \item{time_column}{The column name indicating the time in the users dataset}
 
-\item{transient_phase}{An optional parameter to specify the transient phase (default is NULL).}
+\item{transient_phase}{An optional parameter to specify the transient phase. Options are "increase" and "decrease". This choice was made since different physiological variables respond differently to the same period. Increase indicates that the variable increases after the start_period while decrease the opposite.}
 
 \item{eyeball_data}{A string ("yes" or "no") indicating whether to calculate initial decay parameters using simple maths. If "no" the user has to specify the initial decay parameters}
 
@@ -62,7 +62,8 @@ path_or_list <- filtered_smoothed
 vars <- "TOI_1"
 event_column <- "Comment"
 start_event <- "EVNT13 "
-transient_phase <- "on"
+time_column <- "elpsec"
+transient_phase <- "decrease"
 eyeball_data <- "yes"
 plot_fitted <- "no"
 decay_start <- 10
@@ -71,5 +72,5 @@ A_p_user <- 15
 T_Dp_user <- 9
 tau_p_user <- 5
 
-decay <- single_decay(path_or_list, vars, event_column, start_event, transient_phase, eyeball_data, plot_fitted, decay_start, y_Bas_user, A_p_user, T_Dp_user, tau_p_user)
+decay <- single_decay(path_or_list, vars, event_column, start_event, time_column, transient_phase, eyeball_data, plot_fitted, decay_start, y_Bas_user, A_p_user, T_Dp_user, tau_p_user)
 }

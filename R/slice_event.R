@@ -19,13 +19,13 @@
 #' sampling_freq <- 100  # Assuming 100 rows per second
 #' data_time <- 10  # Select 10 seconds of data around each event
 #' transient_phase <- "off"  # Select data before events
-#' sliced_data <- slice(file_list, period_col, events, sampling_freq, data_time, transient_phase)
+#' sliced_data <- slice_event(file_list, period_col, events, sampling_freq, data_time, transient_phase)
 #' @import zoo
 #' @import dplyr
 #' @import tidyr
 #' @export
 
-slice <- function(file_list, period_col, events, sampling_freq, data_time, transient_phase) {
+slice_event <- function(file_list, period_col, events, sampling_freq, data_time, transient_phase) {
   file_list <- file_list
 
   if (!is.list(file_list)) stop("file_list must be a list of data frames.")

@@ -8,14 +8,14 @@ winsize <- 20
 vars <- c("TOI_1", "TOI_2")
 cleaned_files <- clean(path, winsize, vars)
 
-# Test function sliceslice
+# Test function slice_event
 files <- cleaned_files
 period_col <- "Comment"
 events <- list("EVNT1 ", "EVNT2 ")
 sampling_freq <- 5
 data_time <- 30
 transient_phase <- "on"
-cleaned_sliced <- slice(files, period_col, events, sampling_freq, data_time, transient_phase)
+cleaned_sliced <- slice_event(files, period_col, events, sampling_freq, data_time, transient_phase)
 
 # Aggregate
 aggregated <- aggregate_NIRS(cleaned_sliced)
@@ -35,6 +35,8 @@ filtered_smoothed <- filter_smooth(path, vars)
 
 # Single_decay
 path_or_list <- filtered_smoothed
+path_or_list <- "/Users/dimitrismegaritis/Desktop/test_clean"
+
 vars <- "TOI_1"
 event_column <- "Comment"
 start_event <- "EVNT13 "
