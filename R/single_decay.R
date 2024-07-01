@@ -9,7 +9,7 @@
 #' @param event_column The column name (as a string) in the data frames that contains the event markers.
 #' @param start_event The value in the event column that marks the start of the event.
 #' @param time_column The column name indicating the time in the users dataset
-#' @param transient_phase An optional parameter to specify the transient phase (default is NULL).
+#' @param transient_phase An optional parameter to specify the transient phase. Options are "increase" and "decrease". This choice was made since different physiological variables respond differently to the same period. Increase indicates that the variable increases after the start_period while decrease the opposite.
 #' @param eyeball_data A string ("yes" or "no") indicating whether to calculate initial decay parameters using simple maths. If "no" the user has to specify the initial decay parameters
 #' @param plot_fitted A string ("yes" or "no") indicating whether to plot the fitted model.
 #' @param decay_start The starting point (numeric) for the decay fitting. This should be specified in second.
@@ -26,7 +26,7 @@
 #' event_column <- "Comment"
 #' start_event <- "EVNT13 "
 #' time_column <- "elpsec"
-#' transient_phase <- "on"
+#' transient_phase <- "decrease"
 #' eyeball_data <- "yes"
 #' plot_fitted <- "no"
 #' decay_start <- 10
@@ -38,18 +38,18 @@
 #' decay <- single_decay(path_or_list, vars, event_column, start_event, time_column, transient_phase, eyeball_data, plot_fitted, decay_start, y_Bas_user, A_p_user, T_Dp_user, tau_p_user)
 #' @import ggplot2
 #' @import dplyr
-#' @import signal
 #' @import zoo
 #' @import minpack.lm
 #' @export
 
-single_decay <- function(path_or_list, vars, event_column, start_event, time_column, transient_phase=NULL, eyeball_data="yes", plot_fitted, decay_start, y_Bas_user, A_p_user, T_Dp_user, tau_p_user) {
+single_decay <- function(path_or_list, vars, event_column, start_event, time_column, transient_phase, eyeball_data, plot_fitted, decay_start, y_Bas_user, A_p_user, T_Dp_user, tau_p_user) {
 
   eyeball_data <- match.arg(eyeball_data, choices = c("yes", "no"))
   plot_fitted <- match.arg(plot_fitted, choices = c("yes", "no"))
+  transient_phase <- match.arg(transient_phase, choices = c("decrease", "increase"))
 
   # Specifying function to be called below in different iterations of the if statement
-  process_data <- function(data, vars, event_column, start_event, time_column, transient_phase=NULL, eyeball_data="yes", plot_fitted, decay_start, y_Bas_user, A_p_user, T_Dp_user, tau_p_user) {
+  process_data <- function(data, vars, event_column, start_event, time_column, transient_phase, eyeball_data, plot_fitted, decay_start, y_Bas_user, A_p_user, T_Dp_user, tau_p_user) {
     tryCatch({
       kinetics <- data.frame(
         variable = character(0),
@@ -59,7 +59,8 @@ single_decay <- function(path_or_list, vars, event_column, start_event, time_col
         time_delay = numeric(0),
         tau = numeric(0),
         mrt = numeric(0),
-        rse = numeric(0)
+        rse = numeric(0),
+        decay = character(0)
       )
 
       for (var in vars) {
@@ -79,11 +80,16 @@ single_decay <- function(path_or_list, vars, event_column, start_event, time_col
           y_Bas <- mean(data[start:(start - 25), var], na.rm = TRUE)
 
           # time delay
-          percentage_decrease <- 0.015
-          index_decrease <- as.numeric(which((data[[var]] - y_Bas) / y_Bas < -percentage_decrease)[1])
+          if (transient_phase == "decrease") {
+            percentage_decrease <- 0.015
+            index_change <- as.numeric(which((data[[var]] - y_Bas) / y_Bas < -percentage_decrease)[1])
+          } else if (transient_phase == "increase") {
+            percentage_increase <- 0.015
+            index_change <- as.numeric(which((data[[var]] - y_Bas) / y_Bas > percentage_increase)[1])
+          }
 
           # plateau value and index
-          signal <- data[index_decrease:nrow(data), ]
+          signal <- data[index_change:nrow(data), ]
           threshold <- 0.03
 
           find_plateau_start <- function(signal, threshold, window_size = 50) {
@@ -100,7 +106,7 @@ single_decay <- function(path_or_list, vars, event_column, start_event, time_col
           plateau_start <- as.numeric(find_plateau_start(signal[[var]], threshold, 50))
 
           # Identifying the start of the plateau
-          plateau_index <- as.numeric(index_decrease + plateau_start)
+          plateau_index <- as.numeric(index_change + plateau_start)
 
           # Calculating plateau value
           plateau <- data[plateau_index:nrow(data), ]
@@ -110,15 +116,13 @@ single_decay <- function(path_or_list, vars, event_column, start_event, time_col
           Ap <- abs(y_plateau - y_Bas)
 
           # Calculating TD
-
-
-          TD <- data[["elpsec"]][index_decrease] - data[["elpsec"]][start]
+          TD <- data[["elpsec"]][index_change] - data[["elpsec"]][start]
 
           # Calculating time constant (tp_time)
           y_plateau_start <- data[[var]][plateau_index]
           y_63 <- y_Bas - 0.63*Ap
           tp_index <- which.min(abs(data[[var]] - y_63))
-          tp_time <- abs(data[["elpsec"]][index_decrease] - data[["elpsec"]][tp_index])
+          tp_time <- abs(data[["elpsec"]][index_change] - data[["elpsec"]][tp_index])
 
           # Calculating mean response time (mrt)
           mrt <- tp_time + TD
@@ -131,17 +135,28 @@ single_decay <- function(path_or_list, vars, event_column, start_event, time_col
           first_instance <- data[["elpsec"]][1]
           data[["elpsec"]] <- data[["elpsec"]] - first_instance
 
-          decay_start_index <- index_decrease - start
+          decay_start_index <- index_change - start
           decay_start <- data[["elpsec"]][decay_start_index]
 
           # Fitting the single decay function
-          fit <- nlsLM(as.formula(paste(var, "~ ifelse(", "elpsec", "<= decay_start, y_Bas, y_Bas - A_p * (1 - exp(-(", "elpsec", " - T_Dp) / tau_p)))")),
-                       data = data,
-                       start = c(y_Bas = y_Bas, A_p = Ap, T_Dp = TD, tau_p = tp_time),
-                       lower = c(y_Bas = 0, A_p = 0, T_Dp = 0, tau_p = 0),
-                       upper = c(y_Bas = 200, A_p = 100, T_Dp = 100, tau_p = 50),
-                       algorithm = "port",
-                       control = nls.lm.control(maxiter = 1024))
+          if (transient_phase == "decrease") {
+            fit <- nlsLM(as.formula(paste(var, "~ ifelse(", "elpsec", "<= decay_start, y_Bas, y_Bas - A_p * (1 - exp(-(", "elpsec", " - T_Dp) / tau_p)))")),
+                         data = data,
+                         start = c(y_Bas = y_Bas, A_p = Ap, T_Dp = TD, tau_p = tp_time),
+                         lower = c(y_Bas = 0, A_p = 0, T_Dp = 0, tau_p = 0),
+                         upper = c(y_Bas = 200, A_p = 100, T_Dp = 100, tau_p = 50),
+                         algorithm = "port",
+                         control = nls.lm.control(maxiter = 1024))
+          } else if (transient_phase == "increase") {
+            fit <- nlsLM(as.formula(paste(var, "~ ifelse(", "elpsec", "<= decay_start, y_Bas, y_Bas + A_p * (1 - exp(-(", "elpsec", " - T_Dp) / tau_p)))")),
+                         data = data,
+                         start = c(y_Bas = y_Bas, A_p = Ap, T_Dp = TD, tau_p = tp_time),
+                         lower = c(y_Bas = 0, A_p = 0, T_Dp = 0, tau_p = 0),
+                         upper = c(y_Bas = 200, A_p = 100, T_Dp = 100, tau_p = 50),
+                         algorithm = "port",
+                         control = nls.lm.control(maxiter = 1024))
+          }
+
 
           # Getting the fitted values
           data$fitted <- predict(fit)
@@ -179,22 +194,35 @@ single_decay <- function(path_or_list, vars, event_column, start_event, time_col
           first_instance <- data[["elpsec"]][1]
           data[["elpsec"]] <- data[["elpsec"]] - first_instance
 
-          # Construct the conditional part of the formula
-          ifelse_part <- paste(y_Bas_user, " - ", A_p_user, " * (1 - exp(-(elpsec - ", T_Dp_user, ") / ", tau_p_user, "))", sep = "")
+          if (transient_phase == "decrease") {
+            # Construct the conditional part of the formula
+            ifelse_part <- paste(y_Bas_user, " - ", A_p_user, " * (1 - exp(-(elpsec - ", T_Dp_user, ") / ", tau_p_user, "))", sep = "")
 
-          # Construct the full formula string
-          formula_str <- paste(var, "~ ifelse(elpsec <= ", decay_start, ", ", y_Bas_user, ", ", ifelse_part, ")", sep = "")
+            # Construct the full formula string
+            formula_str <- paste(var, "~ ifelse(elpsec <= ", decay_start, ", ", y_Bas_user, ", ", ifelse_part, ")", sep = "")
 
-          # Print the formula string to check
-          cat(formula_str, "\n")
+            fit <- nlsLM(as.formula(formula_str),
+                         data = data,
+                         start = list(y_Bas = y_Bas_user, A_p = A_p_user, T_Dp = T_Dp_user, tau_p = tau_p_user),
+                         lower = c(y_Bas = 0, A_p = 0, T_Dp = 0, tau_p = 0),
+                         upper = c(y_Bas = 200, A_p = 100, T_Dp = 100, tau_p = 50),
+                         algorithm = "port",
+                         control = nls.lm.control(maxiter = 1024))
+          } else if (transient_phase == "increase") {
+            # Construct the conditional part of the formula
+            ifelse_part <- paste(y_Bas_user, " + ", A_p_user, " * (1 - exp(-(elpsec - ", T_Dp_user, ") / ", tau_p_user, "))", sep = "")
 
-          fit <- nlsLM(as.formula(formula_str),
-                       data = data,
-                       start = list(y_Bas = y_Bas_user, A_p = A_p_user, T_Dp = T_Dp_user, tau_p = tau_p_user),
-                       lower = c(y_Bas = 0, A_p = 0, T_Dp = 0, tau_p = 0),
-                       upper = c(y_Bas = 200, A_p = 100, T_Dp = 100, tau_p = 50),
-                       algorithm = "port",
-                       control = nls.lm.control(maxiter = 1024))
+            # Construct the full formula string
+            formula_str <- paste(var, "~ ifelse(elpsec <= ", decay_start, ", ", y_Bas_user, ", ", ifelse_part, ")", sep = "")
+
+            fit <- nlsLM(as.formula(formula_str),
+                         data = data,
+                         start = list(y_Bas = y_Bas_user, A_p = A_p_user, T_Dp = T_Dp_user, tau_p = tau_p_user),
+                         lower = c(y_Bas = 0, A_p = 0, T_Dp = 0, tau_p = 0),
+                         upper = c(y_Bas = 200, A_p = 100, T_Dp = 100, tau_p = 50),
+                         algorithm = "port",
+                         control = nls.lm.control(maxiter = 1024))
+          }
 
           # Getting the fitted values
           data$fitted <- predict(fit)
@@ -222,7 +250,7 @@ single_decay <- function(path_or_list, vars, event_column, start_event, time_col
         # Append results to kinetics data frame
         kinetics <- rbind(kinetics, data.frame(variable = var, ID = ID, y_baseline = estimates[1],
                                                amplitide = estimates[2], time_delay = estimates[3],
-                                               tau = estimates[4], mrt = mrt, rse = RSE))
+                                               tau = estimates[4], mrt = mrt, rse = RSE, decay = "single decay"))
 
       }
       return(kinetics)
@@ -230,6 +258,7 @@ single_decay <- function(path_or_list, vars, event_column, start_event, time_col
 
     }, error = function(e) {
       cat("Error occurred: ", conditionMessage(e), "\n")
+      traceback
     })
   }
 
@@ -244,7 +273,7 @@ single_decay <- function(path_or_list, vars, event_column, start_event, time_col
       names(path_or_list[[i]])[names(path_or_list[[i]]) == time_column] <- "elpsec"
       # If loading from a list created in the previous steps, the ID is included as a column in each data frame from the list
       ID <- path_or_list[[1]]$ID[1]
-      results[[i]] <- process_data(path_or_list[[i]], vars, event_column, start_event, time_column, transient_phase=NULL, eyeball_data, plot_fitted, decay_start, y_Bas_user, A_p_user, T_Dp_user, tau_p_user)
+      results[[i]] <- process_data(path_or_list[[i]], vars, event_column, start_event, time_column, transient_phase, eyeball_data, plot_fitted, decay_start, y_Bas_user, A_p_user, T_Dp_user, tau_p_user)
 
     }
   } else if (is.character(path_or_list) && dir.exists(path_or_list)) {
@@ -259,7 +288,7 @@ single_decay <- function(path_or_list, vars, event_column, start_event, time_col
       #renaming time_column to elpsec
       names(data)[names(data) == time_column] <- "elpsec"
 
-      results[[file]] <- process_data(data, vars, event_column, start_event, time_column, transient_phase=NULL, eyeball_data, plot_fitted, decay_start, y_Bas_user, A_p_user, T_Dp_user, tau_p_user)
+      results[[file]] <- process_data(data, vars, event_column, start_event, time_column, transient_phase, eyeball_data, plot_fitted, decay_start, y_Bas_user, A_p_user, T_Dp_user, tau_p_user)
     }
   } else {
     stop("path_or_list must be either a list of data frames or a valid directory path containing CSV files.")
@@ -268,3 +297,5 @@ single_decay <- function(path_or_list, vars, event_column, start_event, time_col
   kinetics_merged <- do.call(rbind, results)
   return(kinetics_merged)
 }
+
+
