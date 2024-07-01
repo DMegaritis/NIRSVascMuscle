@@ -53,11 +53,13 @@ cleaned_files <- clean(path, winsize, vars)
 # Test function slice_event
 files <- cleaned_files
 period_col <- "Comment"
-events <- list("EVNT1 ", "EVNT2 ")
+events <- list("EVNT1 ")
 sampling_freq <- 5
-data_time <- 30
-transient_phase <- "on"
-cleaned_sliced <- slice_event(files, period_col, events, sampling_freq, data_time, transient_phase)
+data_before <- 10
+data_after <- 60
+transient_phase <- "kinetics"
+time_column <- "elpsec"
+cleaned_sliced <- slice_event(files, period_col, events, sampling_freq, data_before, data_after, transient_phase, time_column)
 
 # Aggregate
 aggregated <- aggregate_NIRS(cleaned_sliced)

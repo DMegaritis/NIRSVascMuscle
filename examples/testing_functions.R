@@ -13,12 +13,11 @@ files <- cleaned_files
 period_col <- "Comment"
 events <- list("EVNT13 ")
 sampling_freq <- 5
-data_before <- 30
-data_after <- 10
+data_before <- 10
+data_after <- 60
 transient_phase <- "kinetics"
-cleaned_sliced <- slice_event(files, period_col, events, sampling_freq, data_before, data_after, transient_phase)
-data <- cleaned_sliced[[1]]
-
+time_column <- "elpsec"
+cleaned_sliced <- slice_event(files, period_col, events, sampling_freq, data_before, data_after, transient_phase, time_column)
 
 # Aggregate
 aggregated <- aggregate_NIRS(cleaned_sliced)
