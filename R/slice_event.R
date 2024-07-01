@@ -14,7 +14,6 @@
 #' @param transient_phase Character indicating the transient phase: "heterogeneity" or "kinetics". If transient_phase is set to "heterogeneity" the data_after parameter is not used
 #' @return A list of sliced data frames, where each element corresponds to a sliced dataset from each input data frame.
 #' @examples
-#TODO: update examples everywhere
 #' # Example usage:
 #' file_list <- cleaned_files
 #' period_col <- "timestamp"
@@ -80,6 +79,7 @@ slice_event <- function(file_list, period_col, events, sampling_freq, data_befor
       combined_rows_to_select <- c(rows_to_select_before, rows_to_select_after)
       unique_rows_to_select <- unique(combined_rows_to_select)
       data_slice <- data[unique_rows_to_select, ]
+      data_slice <- data_slice[order(data_slice$elpsec), ]
 
     }
 
