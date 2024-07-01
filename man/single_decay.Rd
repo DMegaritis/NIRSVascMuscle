@@ -13,6 +13,7 @@ single_decay(
   transient_phase,
   eyeball_data,
   plot_fitted,
+  plot_directory,
   decay_start,
   y_Bas_user,
   A_p_user,
@@ -37,6 +38,8 @@ single_decay(
 
 \item{plot_fitted}{A string ("yes" or "no") indicating whether to plot the fitted model.}
 
+\item{plot_directory}{A local directory where the plots will be saved}
+
 \item{decay_start}{The starting point (numeric) for the decay fitting. This should be specified in second.}
 
 \item{y_Bas_user}{The user-defined baseline value (numeric) for the y variable.}
@@ -57,7 +60,7 @@ Before calling this function, your data have to be smoothed, the function "filte
 since no missing values are allowed.
 }
 \examples{
-# Example usage with a list of data frames:
+Example usage with a list of data frames:
 path_or_list <- filtered_smoothed
 vars <- "TOI_1"
 event_column <- "Comment"
@@ -66,11 +69,12 @@ time_column <- "elpsec"
 transient_phase <- "decrease"
 eyeball_data <- "yes"
 plot_fitted <- "no"
+plot_directory <- "/Users/dimitrismegaritis/Desktop"
 decay_start <- 10
 y_Bas_user <- 70
 A_p_user <- 15
 T_Dp_user <- 9
 tau_p_user <- 5
 
-decay <- single_decay(path_or_list, vars, event_column, start_event, time_column, transient_phase, eyeball_data, plot_fitted, decay_start, y_Bas_user, A_p_user, T_Dp_user, tau_p_user)
+decay <- single_decay(path_or_list, vars, event_column, start_event, time_column, transient_phase, eyeball_data, plot_fitted, plot_directory, decay_start, y_Bas_user, A_p_user, T_Dp_user, tau_p_user)
 }

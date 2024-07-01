@@ -44,10 +44,10 @@ time_column <- "elpsec"
 transient_phase <- "on"
 eyeball_data <- "yes"
 plot_fitted <- "no"
+plot_directory <- "/Users/dimitrismegaritis/Desktop"
 decay_start <- 10
 y_Bas_user <- 70
 A_p_user <- 15
 T_Dp_user <- 9
 tau_p_user <- 5
-decay <- single_decay(path_or_list, vars, event_column, start_event, time_column, transient_phase, eyeball_data, plot_fitted, decay_start, y_Bas_user, A_p_user, T_Dp_user, tau_p_user)
-
+decay <- single_decay(path_or_list, vars, event_column, start_event, time_column, transient_phase, eyeball_data, plot_fitted, plot_directory, decay_start, y_Bas_user, A_p_user, T_Dp_user, tau_p_user)

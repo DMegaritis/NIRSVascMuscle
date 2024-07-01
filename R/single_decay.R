@@ -12,6 +12,7 @@
 #' @param transient_phase An optional parameter to specify the transient phase. Options are "increase" and "decrease". This choice was made since different physiological variables respond differently to the same period. Increase indicates that the variable increases after the start_period while decrease the opposite.
 #' @param eyeball_data A string ("yes" or "no") indicating whether to calculate initial decay parameters using simple maths. If "no" the user has to specify the initial decay parameters
 #' @param plot_fitted A string ("yes" or "no") indicating whether to plot the fitted model.
+#' @param plot_directory A local directory where the plots will be saved
 #' @param decay_start The starting point (numeric) for the decay fitting. This should be specified in second.
 #' @param y_Bas_user The user-defined baseline value (numeric) for the y variable.
 #' @param A_p_user The user-defined amplitude value (numeric) for the decay model.
@@ -20,7 +21,7 @@
 #'
 #' @return A data frame containing the fitted parameters for each variable in the input data.
 #' @examples
-#' # Example usage with a list of data frames:
+#' Example usage with a list of data frames:
 #' path_or_list <- filtered_smoothed
 #' vars <- "TOI_1"
 #' event_column <- "Comment"
@@ -29,27 +30,28 @@
 #' transient_phase <- "decrease"
 #' eyeball_data <- "yes"
 #' plot_fitted <- "no"
+#' plot_directory <- "/Users/dimitrismegaritis/Desktop"
 #' decay_start <- 10
 #' y_Bas_user <- 70
 #' A_p_user <- 15
 #' T_Dp_user <- 9
 #' tau_p_user <- 5
 #'
-#' decay <- single_decay(path_or_list, vars, event_column, start_event, time_column, transient_phase, eyeball_data, plot_fitted, decay_start, y_Bas_user, A_p_user, T_Dp_user, tau_p_user)
+#' decay <- single_decay(path_or_list, vars, event_column, start_event, time_column, transient_phase, eyeball_data, plot_fitted, plot_directory, decay_start, y_Bas_user, A_p_user, T_Dp_user, tau_p_user)
 #' @import ggplot2
 #' @import dplyr
 #' @import zoo
 #' @import minpack.lm
 #' @export
 
-single_decay <- function(path_or_list, vars, event_column, start_event, time_column, transient_phase, eyeball_data, plot_fitted, decay_start, y_Bas_user, A_p_user, T_Dp_user, tau_p_user) {
+single_decay <- function(path_or_list, vars, event_column, start_event, time_column, transient_phase, eyeball_data, plot_fitted, plot_directory, decay_start, y_Bas_user, A_p_user, T_Dp_user, tau_p_user) {
 
   eyeball_data <- match.arg(eyeball_data, choices = c("yes", "no"))
   plot_fitted <- match.arg(plot_fitted, choices = c("yes", "no"))
   transient_phase <- match.arg(transient_phase, choices = c("decrease", "increase"))
 
   # Specifying function to be called below in different iterations of the if statement
-  process_data <- function(data, vars, event_column, start_event, time_column, transient_phase, eyeball_data, plot_fitted, decay_start, y_Bas_user, A_p_user, T_Dp_user, tau_p_user) {
+  process_data <- function(data, vars, event_column, start_event, time_column, transient_phase, eyeball_data, plot_fitted, plot_directory, decay_start, y_Bas_user, A_p_user, T_Dp_user, tau_p_user) {
     tryCatch({
       kinetics <- data.frame(
         variable = character(0),
@@ -125,7 +127,7 @@ single_decay <- function(path_or_list, vars, event_column, start_event, time_col
             y_63 <- y_Bas - 0.63*Ap
           } else if (transient_phase == "increase") {
             y_63 <- y_Bas + 0.63*Ap
-            }
+          }
 
           tp_index <- which.min(abs(data[[var]] - y_63))
           tp_time <- abs(data[["elpsec"]][index_change] - data[["elpsec"]][tp_index])
@@ -168,13 +170,17 @@ single_decay <- function(path_or_list, vars, event_column, start_event, time_col
           data$fitted <- predict(fit)
 
           if (plot_fitted == "yes") {
-            ggplot(data, aes(x = elpsec, y = TOI_1)) +
+            p <- ggplot(data, aes(x = elpsec, y = TOI_1)) +
               geom_point(color = "blue", alpha = 0.5) +
               geom_line(aes(y = fitted), color = "red") +
               labs(title = "Non-linear Least Squares Fit",
                    x = "elpsec",
                    y = "TOI_1") +
               theme_minimal()
+
+            setwd(plot_directory)
+            ggsave(paste0(ID, "x", var, ".pdf"), width = 10, height = 10)
+
           }
 
           # Summary fit provides coefficients to be extracted
@@ -234,13 +240,15 @@ single_decay <- function(path_or_list, vars, event_column, start_event, time_col
           data$fitted <- predict(fit)
 
           if (plot_fitted == "yes") {
-            ggplot(data, aes(x = elpsec, y = TOI_1)) +
+            p <- ggplot(data, aes(x = elpsec, y = TOI_1)) +
               geom_point(color = "blue", alpha = 0.5) +
               geom_line(aes(y = fitted), color = "red") +
               labs(title = "Non-linear Least Squares Fit",
                    x = "elpsec",
                    y = "TOI_1") +
               theme_minimal()
+            setwd(plot_directory)
+            ggsave(paste0(ID, "x", var, ".pdf"), width = 10, height = 10)
           }
 
           # Summary fit provides coefficients to be extracted
@@ -279,7 +287,7 @@ single_decay <- function(path_or_list, vars, event_column, start_event, time_col
       names(path_or_list[[i]])[names(path_or_list[[i]]) == time_column] <- "elpsec"
       # If loading from a list created in the previous steps, the ID is included as a column in each data frame from the list
       ID <- path_or_list[[1]]$ID[1]
-      results[[i]] <- process_data(path_or_list[[i]], vars, event_column, start_event, time_column, transient_phase, eyeball_data, plot_fitted, decay_start, y_Bas_user, A_p_user, T_Dp_user, tau_p_user)
+      results[[i]] <- process_data(path_or_list[[i]], vars, event_column, start_event, time_column, transient_phase, eyeball_data, plot_fitted, plot_directory, decay_start, y_Bas_user, A_p_user, T_Dp_user, tau_p_user)
 
     }
   } else if (is.character(path_or_list) && dir.exists(path_or_list)) {
@@ -294,7 +302,7 @@ single_decay <- function(path_or_list, vars, event_column, start_event, time_col
       #renaming time_column to elpsec
       names(data)[names(data) == time_column] <- "elpsec"
 
-      results[[file]] <- process_data(data, vars, event_column, start_event, time_column, transient_phase, eyeball_data, plot_fitted, decay_start, y_Bas_user, A_p_user, T_Dp_user, tau_p_user)
+      results[[file]] <- process_data(data, vars, event_column, start_event, time_column, transient_phase, eyeball_data, plot_fitted, plot_directory, decay_start, y_Bas_user, A_p_user, T_Dp_user, tau_p_user)
     }
   } else {
     stop("path_or_list must be either a list of data frames or a valid directory path containing CSV files.")
@@ -303,5 +311,3 @@ single_decay <- function(path_or_list, vars, event_column, start_event, time_col
   kinetics_merged <- do.call(rbind, results)
   return(kinetics_merged)
 }
-
-
