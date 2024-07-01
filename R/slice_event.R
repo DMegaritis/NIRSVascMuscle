@@ -77,7 +77,7 @@ slice_event <- function(file_list, period_col, events, sampling_freq, data_befor
       rows_to_select_after <- unlist(lapply(evnt_rows, function(x) max(1, x):(x + data_length_after)))
       rows_to_select_before <- unlist(lapply(evnt_rows, function(x) max(1, x - data_length_before):x))
 
-      combined_rows_to_select <- c(rows_to_select_after, rows_to_select_before)
+      combined_rows_to_select <- c(rows_to_select_before, rows_to_select_after)
       unique_rows_to_select <- unique(combined_rows_to_select)
       data_slice <- data[unique_rows_to_select, ]
 
