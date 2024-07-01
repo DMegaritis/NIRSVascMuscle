@@ -11,7 +11,8 @@ Imports:
     dplyr,
     tidyr,
     zoo,
-    signal
+    signal,
+    ggplot2
 Inst/extdata:
     001-001_NIRS.csv
     002-002_NIRS.csv
