@@ -120,7 +120,13 @@ single_decay <- function(path_or_list, vars, event_column, start_event, time_col
 
           # Calculating time constant (tp_time)
           y_plateau_start <- data[[var]][plateau_index]
-          y_63 <- y_Bas - 0.63*Ap
+
+          if (transient_phase == "decrease") {
+            y_63 <- y_Bas - 0.63*Ap
+          } else if (transient_phase == "increase") {
+            y_63 <- y_Bas + 0.63*Ap
+            }
+
           tp_index <- which.min(abs(data[[var]] - y_63))
           tp_time <- abs(data[["elpsec"]][index_change] - data[["elpsec"]][tp_index])
 
