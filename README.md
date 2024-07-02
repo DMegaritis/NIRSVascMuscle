@@ -93,4 +93,25 @@ A_p_user <- 15
 T_Dp_user <- 9
 tau_p_user <- 5
 decay <- single_decay(path_or_list, vars, event_column, start_event, time_column, transient_phase, eyeball_data, plot_fitted, plot_directory, decay_start, y_Bas_user, A_p_user, T_Dp_user, tau_p_user)
+
+# Double decay
+path_or_list <- filtered_smoothed
+vars <- "TOI_1"
+event_column <- "Comment"
+start_event <- "EVNT13 "
+time_column <- "elpsec"
+transient_phase <- "decrease"
+eyeball_data <- "yes"
+plot_fitted <- "no"
+plot_directory <- "/Users/dimitrismegaritis/Desktop"
+decay_start <- 10
+y_Bas_user <- 70
+A_p_user <- 15
+T_Dp_user <- 9
+tau_p_user <- 5
+A_s_user <- 55
+T_Ds_user <- 5
+tau_s_user <- 4
+
+decay <- double_decay(path_or_list, vars, event_column, start_event, time_column, transient_phase, eyeball_data, plot_fitted, plot_directory, decay_start, y_Bas_user, A_p_user, T_Dp_user, tau_p_user, A_s_user, T_Ds_user, tau_s_user)
 ```

@@ -2,6 +2,7 @@
 
 export(aggregate_NIRS)
 export(clean)
+export(double_decay)
 export(filter_smooth)
 export(heterogeneity)
 export(single_decay)
