@@ -50,7 +50,7 @@ filter_smooth <- function(path_or_list, vars) {
       filtered_files_list[[file]] <- data
     }
   } else {
-    file_list <- list.files(path = path, pattern = "\\.csv$", full.names = TRUE)
+    file_list <- list.files(path = path_or_list, pattern = "\\.csv$", full.names = TRUE)
     filtered_files_list <- list()
 
     for (file in file_list) {
