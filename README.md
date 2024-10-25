@@ -4,8 +4,6 @@ NIRSVascMuscle is an R package designed for analyzing Near-Infrared Spectroscopy
 
 ## General Description
 
-This is a package to perform analyses on Near-Infrared Spectroscopy (NIRS) data. The kinetics analyses can be performed on other types of physiological data such as oxygen uptake kinetics. 
-
 The kinetics analyses implemented functions from the following original papers:
 
 - Bauer, T. A., Brass, E. P., Barstow, T. J., & Hiatt, W. R. (2007, May). Skeletal muscle StO2 kinetics are slowed during low work rate calf exercise in peripheral arterial disease. European Journal of Applied Physiology, 100(2), 143-151. https://doi.org/10.1007/s00421-007-0412-0 
