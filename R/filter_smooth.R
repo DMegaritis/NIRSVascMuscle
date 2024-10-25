@@ -31,6 +31,7 @@ filter_smooth <- function(path_or_list, vars) {
   if (is.list(path_or_list)) {
     for (i in seq_along(path_or_list)) {
       data <- path_or_list[[i]]
+      filtered_files_list <- list()
 
       for (var in vars) {
         if (var %in% colnames(data)) {
