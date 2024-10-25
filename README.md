@@ -6,9 +6,9 @@ NIRSVascMuscle is an R package designed for analyzing Near-Infrared Spectroscopy
 
 The kinetics analyses implemented functions from the following original papers:
 
-- Bauer, T. A., Brass, E. P., Barstow, T. J., & Hiatt, W. R. (2007, May). Skeletal muscle StO2 kinetics are slowed during low work rate calf exercise in peripheral arterial disease. European Journal of Applied Physiology, 100(2), 143-151. https://doi.org/10.1007/s00421-007-0412-0 
+- Bauer, T. A., Brass, E. P., Barstow, T. J., & Hiatt, W. R. (2007). Skeletal muscle StO2 kinetics are slowed during low work rate calf exercise in peripheral arterial disease. European Journal of Applied Physiology, 100(2), 143-151. https://doi.org/10.1007/s00421-007-0412-0 
 
-- Grassi, B., Pogliaghi, S., Rampichini, S., Quaresima, V., Ferrari, M., Marconi, C., & Cerretelli, P. (2003, Jul). Muscle oxygenation and pulmonary gas exchange kinetics during cycling exercise on-transitions in humans. J Appl Physiol (1985), 95(1), 149-158. https://doi.org/10.1152/japplphysiol.00695.2002 
+- Grassi, B., Pogliaghi, S., Rampichini, S., Quaresima, V., Ferrari, M., Marconi, C., & Cerretelli, P. (2003). Muscle oxygenation and pulmonary gas exchange kinetics during cycling exercise on-transitions in humans. J Appl Physiol (1985), 95(1), 149-158. https://doi.org/10.1152/japplphysiol.00695.2002 
 
 The heterogeneity analyses are based on the paper:
 
