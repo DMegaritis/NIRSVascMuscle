@@ -51,7 +51,7 @@ cleaned_files <- clean(path, winsize, vars)
 # Test function slice_event
 files <- cleaned_files
 period_col <- "Comment"
-events <- list("EVNT1 ")
+events <- list("EVNT13 ")
 sampling_freq <- 5
 data_before <- 10
 data_after <- 60
