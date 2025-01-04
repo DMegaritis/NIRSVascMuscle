@@ -82,7 +82,12 @@ double_decay <- function(path_or_list, vars, event_column, start_event, time_col
           start <- as.numeric(start)
 
           # y_Bas
-          y_Bas <- mean(data[start:(start - 25), var], na.rm = TRUE)
+          if (start > 25) {
+            y_Bas <- mean(data[(start - 25):start, var], na.rm = TRUE)
+          } else {
+            # Handle edge case where start <= 25
+            y_Bas <- mean(data[1:start, var], na.rm = TRUE)
+          }
 
           # time delay
           if (transient_phase == "decrease") {
